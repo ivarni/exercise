@@ -18665,6 +18665,7 @@ var React = require('react');
 var fields = require('../config/fields')
 var selectData = require('../config/selectData')
 
+//This component is getting too big...
 module.exports = React.createClass({
     getInitialState: function() {
         var state = {};
@@ -18735,8 +18736,11 @@ module.exports = React.createClass({
 var React = require('react');
 
 var ActivityInput = require('./activityInput');
-var DateSelector = require('./dateSelector')
-var ActivitySummary = require('./activitySummary')
+var DateSelector = require('./dateSelector');
+var ActivitySummary = require('./activitySummary');
+var CreateActivity = require('./createActivity');
+
+var selectData = require('../config/selectData');
 
 var mockData = [
     {
@@ -18767,6 +18771,10 @@ module.exports = React.createClass({
             return activity.date;
         });
         return React.DOM.div(null, [
+            CreateActivity({
+                key: 'CreateActivity',
+                saveNewActivity: this.saveNewActivityType
+            }),
             DateSelector({
                 key: 'DateSelector',
                 dates: dates,
@@ -18789,6 +18797,11 @@ module.exports = React.createClass({
         });
         this.setState({ selected: newSelected })
     },
+    saveNewActivityType: function(name) {
+        selectData.name.push(name);
+        //TOOD: Figure out how to fore render the right way
+        this.setState(this.getInitialState());
+    },
     saveNewActivity: function(activity) {
         this.state.selected.activities.push(activity);
         this.state.selected.activities[this.state.selected.activities.length - 1].id = "1-" + this.state.selected.activities.length;
@@ -18796,7 +18809,7 @@ module.exports = React.createClass({
     }
 });
 
-},{"./activityInput":149,"./activitySummary":151,"./dateSelector":152,"react":145}],151:[function(require,module,exports){
+},{"../config/selectData":147,"./activityInput":149,"./activitySummary":151,"./createActivity":152,"./dateSelector":153,"react":145}],151:[function(require,module,exports){
 var React = require('react');
 
 var fields = require('../config/fields');
@@ -18826,6 +18839,49 @@ module.exports = React.createClass({
 });
 
 },{"../config/fields":146,"react":145}],152:[function(require,module,exports){
+var React = require('react');
+
+module.exports = React.createClass({
+    getInitialState: function() {
+        return {
+            adding: false,
+            name: ''
+        }
+    },
+    handleStateChange: function(event) {
+        this.setState({ name: event.target.value });
+    },
+    saveActivity: function() {
+        this.props.saveNewActivity(this.state.name);
+        this.setState(this.getInitialState());
+    },
+    render: function() {
+        var elements = [];
+        elements.push(React.DOM.button({
+                key: 'add-activity-button',
+                onClick: this.toggleAdd
+            }, this.state.adding ? 'Cancel' : 'Add')
+        );
+        if (this.state.adding) {
+            elements.push(React.DOM.input({
+                key: 'add-activity-input',
+                onChange: this.handleStateChange,
+                value: this.state.name,
+                name: 'name'
+            }));
+            elements.push(React.DOM.button({
+                key: 'add-activit-save',
+                onClick: this.saveActivity
+            }, 'Save'));
+        }
+        return React.DOM.div(null, elements);
+    },
+    toggleAdd: function() {
+        this.setState({ adding: !this.state.adding });
+    }
+});
+
+},{"react":145}],153:[function(require,module,exports){
 var React = require('react');
 
 module.exports = React.createClass({
