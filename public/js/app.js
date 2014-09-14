@@ -18630,6 +18630,14 @@ module.exports = warning;
 module.exports = require('./lib/React');
 
 },{"./lib/React":28}],146:[function(require,module,exports){
+module.exports = [
+    'name',
+    'kgs',
+    'sets',
+    'reps'
+];
+
+},{}],147:[function(require,module,exports){
 (function() {
 
     var ActivityOverview = require('./modules/activityOverview');
@@ -18642,61 +18650,55 @@ module.exports = require('./lib/React');
 
 }());
 
-},{"./modules/activityOverview":148,"react":145}],147:[function(require,module,exports){
+},{"./modules/activityOverview":149,"react":145}],148:[function(require,module,exports){
 var React = require('react');
+
+var fields = require('../config/fields')
 
 module.exports = React.createClass({
     getInitialState: function() {
-        return {
-            name: '',
-            kgs: '',
-            sets: '',
-            reps: ''
-        };
+        var state = {};
+        fields.forEach(function(field) {
+            state[field] = '';
+        });
+        return state;
     },
     render: function() {
-        var fields = ['Name', 'Kgs', 'Sets', 'Reps'];
-        fields = fields.map(function(field, i) {
+        var inputs = fields.map(function(field, i) {
             return React.DOM.div({ key: 'input-' + i}, [
                 React.DOM.label({
                     key: 'input-' + i + '-label',
-                    htmlFor: field.toLowerCase()
+                    htmlFor: field
                 }, field + ": "),
                 React.DOM.input({
                     key: 'input-' + i + '-field',
-                    value: this.state[field.toLowerCase()],
-                    name: field.toLowerCase(),
+                    value: this.state[field],
+                    name: field,
                     onChange: this.handleInputChange
                 })
             ]);
         }, this);
-        fields.push(React.DOM.button({
+        inputs.push(React.DOM.button({
             key: 'input-button',
             onClick: this.saveNewActivity
         }, 'Save'))
-        return React.DOM.div(null, fields);
+        return React.DOM.div(null, inputs);
     },
     saveNewActivity: function() {
-        this.props.saveNewActivity({
-            name: this.state.name,
-            kgs: this.state.kgs,
-            sets: this.state.sets,
-            reps: this.state.reps
-        });
-        this.setState({
-            name: '',
-            kgs: '',
-            sets: '',
-            reps: ''
-        });
+        var newActivity = {};
+        fields.forEach(function(field) {
+            newActivity[field] = this.state[field];
+        }, this);
+        this.props.saveNewActivity(newActivity);
+        this.setState(this.getInitialState());
     },
     handleInputChange: function(event) {
         this.state[event.target.name] = event.target.value;
-        this.setState(this.state)
+        this.setState(this.state);
     },
 });
 
-},{"react":145}],148:[function(require,module,exports){
+},{"../config/fields":146,"react":145}],149:[function(require,module,exports){
 var React = require('react');
 
 var ActivityInput = require('./activityInput');
@@ -18761,26 +18763,26 @@ module.exports = React.createClass({
     }
 });
 
-},{"./activityInput":147,"./activitySummary":149,"./dateSelector":150,"react":145}],149:[function(require,module,exports){
+},{"./activityInput":148,"./activitySummary":150,"./dateSelector":151,"react":145}],150:[function(require,module,exports){
 var React = require('react');
+
+var fields = require('../config/fields');
 
 module.exports = React.createClass({
     render: function() {
         var elements = this.props.selected.activities.map(function(activity) {
-            return React.DOM.tr({ key: activity.id }, [
-                React.DOM.td({ key: activity.id + '-name'}, activity.name),
-                React.DOM.td({ key: activity.id + '-kgs'}, activity.kgs),
-                React.DOM.td({ key: activity.id + '-sets'}, activity.sets),
-                React.DOM.td({ key: activity.id + '-reps'}, activity.reps)
-            ]);
+            return React.DOM.tr({ key: activity.id },
+                fields.map(function(field) {
+                    return React.DOM.td({ key: activity.id + '-' + field}, activity[field]);
+                })
+            );
         });
         elements.unshift(
-            React.DOM.tr({ key: 'summary-header-row' }, [
-                React.DOM.th({ key: 'summary-header-name' }, 'Øvelse'),
-                React.DOM.th({ key: 'summary-header-kgs' }, 'Kg'),
-                React.DOM.th({ key: 'summary-header-sets' }, 'Sets'),
-                React.DOM.th({ key: 'summary-header-reps' }, 'Reps'),
-            ])
+            React.DOM.tr({ key: 'summary-header-row' },
+                fields.map(function(field) {
+                    return React.DOM.th({ key: 'summary-header-' + field}, field)
+                })
+            )
         );
         return React.DOM.div(null, [
             React.DOM.h2({ key: 'headertext' }, this.props.selected.date.toLocaleDateString()),
@@ -18790,7 +18792,7 @@ module.exports = React.createClass({
     }
 });
 
-},{"react":145}],150:[function(require,module,exports){
+},{"../config/fields":146,"react":145}],151:[function(require,module,exports){
 var React = require('react');
 
 module.exports = React.createClass({
@@ -18811,4 +18813,4 @@ module.exports = React.createClass({
     }
 });
 
-},{"react":145}]},{},[146]);
+},{"react":145}]},{},[147]);
