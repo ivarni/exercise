@@ -1,0 +1,10 @@
+{
+  "author": "Ivar Nilsen",
+  "name": "snake",
+  "description": "Snake",
+  "version": "0.0.1",
+  "dependencies": {},
+  "devDependencies": {
+    "grunt-contrib-connect": "0.8.0"
+  }
+}
