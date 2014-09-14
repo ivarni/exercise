@@ -4,6 +4,7 @@ var ActivityInput = require('./activityInput');
 var DateSelector = require('./dateSelector');
 var ActivitySummary = require('./activitySummary');
 var CreateActivity = require('./createActivity');
+var CreateEvent = require('./createEvent');
 
 var selectData = require('../config/selectData');
 
@@ -36,6 +37,10 @@ module.exports = React.createClass({
             return activity.date;
         });
         return React.DOM.div(null, [
+            CreateEvent({
+                key: 'CreateEvent',
+                saveNewEvent: this.saveNewEvent
+            }),
             CreateActivity({
                 key: 'CreateActivity',
                 saveNewActivity: this.saveNewActivityType
@@ -61,6 +66,15 @@ module.exports = React.createClass({
             return c.date === newDate;
         });
         this.setState({ selected: newSelected })
+    },
+    saveNewEvent: function() {
+        mockData.push({
+            id: '3',
+            date: new Date(),
+            activities: []
+        });
+        //TOOD: Figure out how to fore render the right way
+        this.setState(this.getInitialState());
     },
     saveNewActivityType: function(name) {
         selectData.name.push(name);
