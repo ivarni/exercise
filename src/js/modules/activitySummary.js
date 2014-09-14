@@ -7,14 +7,14 @@ module.exports = React.createClass({
         var elements = this.props.selected.activities.map(function(activity) {
             return React.DOM.tr({ key: activity.id },
                 fields.map(function(field) {
-                    return React.DOM.td({ key: activity.id + '-' + field}, activity[field]);
+                    return React.DOM.td({ key: activity.id + '-' + field.name}, activity[field.name]);
                 })
             );
         });
         elements.unshift(
             React.DOM.tr({ key: 'summary-header-row' },
                 fields.map(function(field) {
-                    return React.DOM.th({ key: 'summary-header-' + field}, field)
+                    return React.DOM.th({ key: 'summary-header-' + field.name}, field.name)
                 })
             )
         );

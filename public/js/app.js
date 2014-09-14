@@ -18631,13 +18631,22 @@ module.exports = require('./lib/React');
 
 },{"./lib/React":28}],146:[function(require,module,exports){
 module.exports = [
-    'name',
-    'kgs',
-    'sets',
-    'reps'
+    { name: 'name', type: 'select' },
+    { name: 'kgs', type: 'input' },
+    { name: 'sets', type: 'input' },
+    { name: 'reps', type: 'input' }
 ];
 
 },{}],147:[function(require,module,exports){
+module.exports = {
+    name: [
+        '',
+        'Knebøy',
+        'Bicepscurl'
+    ]
+};
+
+},{}],148:[function(require,module,exports){
 (function() {
 
     var ActivityOverview = require('./modules/activityOverview');
@@ -18650,33 +18659,53 @@ module.exports = [
 
 }());
 
-},{"./modules/activityOverview":149,"react":145}],148:[function(require,module,exports){
+},{"./modules/activityOverview":150,"react":145}],149:[function(require,module,exports){
 var React = require('react');
 
 var fields = require('../config/fields')
+var selectData = require('../config/selectData')
 
 module.exports = React.createClass({
     getInitialState: function() {
         var state = {};
         fields.forEach(function(field) {
-            state[field] = '';
+            state[field.name] = '';
         });
         return state;
     },
     render: function() {
         var inputs = fields.map(function(field, i) {
-            return React.DOM.div({ key: 'input-' + i}, [
+            var parts = [
                 React.DOM.label({
                     key: 'input-' + i + '-label',
-                    htmlFor: field
-                }, field + ": "),
-                React.DOM.input({
-                    key: 'input-' + i + '-field',
-                    value: this.state[field],
-                    name: field,
-                    onChange: this.handleInputChange
-                })
-            ]);
+                    htmlFor: field.name
+                }, field.name + ": ")
+            ];
+            if (field.type === 'input') {
+                parts.push(
+                    React.DOM.input({
+                        key: 'input-' + i + '-field',
+                        value: this.state[field.name],
+                        name: field.name,
+                        onChange: this.handleInputChange
+                    })
+                );
+            } else if (field.type === 'select') {
+                var options = selectData[field.name].map(function(option, i) {
+                    return React.DOM.option({
+                        value: i
+                    }, option);
+                });
+                parts.push(
+                    React.DOM.select({
+                        key: 'input-' + i + '-field',
+                        name: field.name,
+                        defaultValue: 0,
+                        onChange: this.handleInputChange
+                    }, options)
+                );
+            }
+            return React.DOM.div({ key: 'input-' + i}, parts);
         }, this);
         inputs.push(React.DOM.button({
             key: 'input-button',
@@ -18687,7 +18716,11 @@ module.exports = React.createClass({
     saveNewActivity: function() {
         var newActivity = {};
         fields.forEach(function(field) {
-            newActivity[field] = this.state[field];
+            if (field.type === 'input') {
+                newActivity[field.name] = this.state[field.name];
+            } else if (field.type === 'select') {
+                newActivity[field.name] = selectData[field.name][this.state[field.name]];
+            }
         }, this);
         this.props.saveNewActivity(newActivity);
         this.setState(this.getInitialState());
@@ -18698,7 +18731,7 @@ module.exports = React.createClass({
     },
 });
 
-},{"../config/fields":146,"react":145}],149:[function(require,module,exports){
+},{"../config/fields":146,"../config/selectData":147,"react":145}],150:[function(require,module,exports){
 var React = require('react');
 
 var ActivityInput = require('./activityInput');
@@ -18763,7 +18796,7 @@ module.exports = React.createClass({
     }
 });
 
-},{"./activityInput":148,"./activitySummary":150,"./dateSelector":151,"react":145}],150:[function(require,module,exports){
+},{"./activityInput":149,"./activitySummary":151,"./dateSelector":152,"react":145}],151:[function(require,module,exports){
 var React = require('react');
 
 var fields = require('../config/fields');
@@ -18773,14 +18806,14 @@ module.exports = React.createClass({
         var elements = this.props.selected.activities.map(function(activity) {
             return React.DOM.tr({ key: activity.id },
                 fields.map(function(field) {
-                    return React.DOM.td({ key: activity.id + '-' + field}, activity[field]);
+                    return React.DOM.td({ key: activity.id + '-' + field.name}, activity[field.name]);
                 })
             );
         });
         elements.unshift(
             React.DOM.tr({ key: 'summary-header-row' },
                 fields.map(function(field) {
-                    return React.DOM.th({ key: 'summary-header-' + field}, field)
+                    return React.DOM.th({ key: 'summary-header-' + field.name}, field.name)
                 })
             )
         );
@@ -18792,7 +18825,7 @@ module.exports = React.createClass({
     }
 });
 
-},{"../config/fields":146,"react":145}],151:[function(require,module,exports){
+},{"../config/fields":146,"react":145}],152:[function(require,module,exports){
 var React = require('react');
 
 module.exports = React.createClass({
@@ -18813,4 +18846,4 @@ module.exports = React.createClass({
     }
 });
 
-},{"react":145}]},{},[147]);
+},{"react":145}]},{},[148]);

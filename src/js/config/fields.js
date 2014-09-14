@@ -1,6 +1,6 @@
 module.exports = [
-    'name',
-    'kgs',
-    'sets',
-    'reps'
+    { name: 'name', type: 'select' },
+    { name: 'kgs', type: 'input' },
+    { name: 'sets', type: 'input' },
+    { name: 'reps', type: 'input' }
 ];
