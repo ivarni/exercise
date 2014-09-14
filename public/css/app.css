@@ -1,9 +1,0 @@
-a.selected {
-    color: black;
-    text-decoration: none;
-}
-
-label,
-th {
-    text-transform: capitalize;
-}
