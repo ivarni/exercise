@@ -32,6 +32,7 @@ module.exports = React.createClass({
             } else if (field.type === 'select') {
                 var options = selectData[field.name].map(function(option, i) {
                     return React.DOM.option({
+                        key: field.name + '-option-' + i,
                         value: i
                     }, option);
                 });
