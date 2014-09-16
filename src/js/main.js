@@ -1,6 +1,6 @@
 (function() {
 
-    var ActivityOverview = require('./modules/activityOverview');
+    var ActivityOverview = require('./views/activityOverview');
     var React = require('react');
 
     React.renderComponent(
