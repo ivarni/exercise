@@ -8,36 +8,21 @@ var CreateEvent = require('./createEvent');
 
 var selectData = require('../config/selectData');
 
-var mockData = [
-    {
-        id: '1',
-        date: new Date(2014, 8, 14),
-        activities: [
-            { id: '1-1', name: 'Markløft', kgs: 70, sets: 4, reps: 8 },
-            { id: '1-2', name: 'Knebøy', kgs: 60, sets: 3, reps: 8 }
-        ]
-    }, {
-        id: '2',
-        date: new Date(2014, 8, 11),
-        activities: [
-            { id: '2-1', name: 'Brystpress', kgs: 22, sets: 3, reps: 8 },
-            { id: '2-2', name: 'Bicepscurl', kgs: 12, sets: 3, reps: 10 }
-        ]
-    },
-];
+var mockData = [];
 
 module.exports = React.createClass({
     componentDidMount: function() {
         this.props.events.fetch();
+        this.props.events.on('add remove change', this.forceUpdate.bind(this, null));
     },
     getInitialState: function() {
         return {
-            selected : mockData[0]
+            selected: null
         };
     },
     render: function() {
-        var dates = mockData.map(function(activity) {
-            return activity.date;
+        var dates = this.props.events.map(function(activity) {
+            return activity.get('date');
         });
         return React.DOM.div(null, [
             CreateEvent({
@@ -51,7 +36,7 @@ module.exports = React.createClass({
             DateSelector({
                 key: 'DateSelector',
                 dates: dates,
-                selectedDate: this.state.selected.date,
+                selectedDate: this.state.selected ? this.state.selected.get('date') :null,
                 changeSelectedDate: this.changeSelectedDate
             }),
             ActivitySummary({
@@ -65,8 +50,8 @@ module.exports = React.createClass({
         ]);
     },
     changeSelectedDate: function(newDate) {
-        var newSelected = mockData.find(function(c) {
-            return c.date === newDate;
+        var newSelected = this.props.events.find(function(c) {
+            return c.get('date') === newDate;
         });
         this.setState({ selected: newSelected })
     },
@@ -85,8 +70,8 @@ module.exports = React.createClass({
         this.setState(this.getInitialState());
     },
     saveNewActivity: function(activity) {
-        this.state.selected.activities.push(activity);
-        this.state.selected.activities[this.state.selected.activities.length - 1].id = "1-" + this.state.selected.activities.length;
+        this.state.selected.get('activities').push(activity);
+        this.state.selected.get('activities')[this.state.selected.get('activities').length - 1].id = "1-" + this.state.selected.get('activities').length;
         this.setState({ selected: this.state.selected });
     }
 });

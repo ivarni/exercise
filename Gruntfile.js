@@ -42,7 +42,7 @@ module.exports = function(grunt) {
                 tasks: ['copy']
             },
             express: {
-                files: ['server.js'],
+                files: ['server.js', 'server/**/*.js'],
                 tasks: ['express:dev'],
                 options: {
                     spawn: false

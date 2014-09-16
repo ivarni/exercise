@@ -1,5 +1,7 @@
 var restify = require('restify');
 
+var events = require('./server/events');
+
 function log(req, res, next) {
     console.log('%s: %s', req.method, req.path());
     res.on('finish', function() {
@@ -9,8 +11,10 @@ function log(req, res, next) {
 }
 
 function getEvents(req, res, next) {
-    res.send('test');
-    next();
+    events.get().then(function(data) {
+        res.send(data);
+        next();
+    });
 }
 
 var server = restify.createServer();
