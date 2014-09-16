@@ -2,6 +2,12 @@ var React = require('react');
 var moment = require('moment');
 
 module.exports = React.createClass({
+    componentDidMount: function() {
+        var self = this;
+    },
+    handleClick: function(day) {
+        this.props.changeSelectedDate(day)
+    },
     render: function() {
         var now = moment();
         var previous = moment().month(now.month() - 1);
@@ -19,13 +25,15 @@ module.exports = React.createClass({
             next.year(),
             next.month()
         );
-        thisMonth = monthBefore.
+        this.thisMonth = monthBefore.
             concat(makeDayArray(1, now.endOf('month').date(), now.year(), now.month())).
             concat(nextMonth);
 
-        var elements = thisMonth.map(function(day, i) {
+        var self = this;
+        var elements = this.thisMonth.map(function(day, i) {
             return React.DOM.div({
                     key: i,
+                    onClick: function() { self.handleClick(day) },
                     className: getClassNames(day, now)
                 }, day.date());
         });
@@ -37,6 +45,7 @@ module.exports = React.createClass({
 
 function getClassNames(day, now) {
     return [
+        'day',
         day.day() % 7 === 1 ? 'week-start': '',
         day.month() !== now.month() ? 'disabled': ''
     ].join(' ');

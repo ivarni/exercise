@@ -1,10 +1,9 @@
 var React = require('react');
+var moment = require('moment');
 
 var ActivityInput = require('./activityInput');
-var DateSelector = require('./dateSelector');
 var ActivitySummary = require('./activitySummary');
 var CreateActivity = require('./createActivity');
-var CreateEvent = require('./createEvent');
 var DatePicker = require('./datePicker');
 
 var selectData = require('../config/selectData');
@@ -27,21 +26,13 @@ module.exports = React.createClass({
         });
         return React.DOM.div(null, [
             DatePicker({
-                key: 'DatePicker'
-            }),
-            CreateEvent({
-                key: 'CreateEvent',
-                saveNewEvent: this.saveNewEvent
+                key: 'DatePicker',
+                changeSelectedDate: this.changeSelectedDate,
+                selectedDate: this.state.selected ? this.state.selected.get('date') :null,
             }),
             CreateActivity({
                 key: 'CreateActivity',
                 saveNewActivity: this.saveNewActivityType
-            }),
-            DateSelector({
-                key: 'DateSelector',
-                dates: dates,
-                selectedDate: this.state.selected ? this.state.selected.get('date') :null,
-                changeSelectedDate: this.changeSelectedDate
             }),
             ActivitySummary({
                 key: 'ActivitySummary',
@@ -55,18 +46,9 @@ module.exports = React.createClass({
     },
     changeSelectedDate: function(newDate) {
         var newSelected = this.props.events.find(function(c) {
-            return c.get('date') === newDate;
+            return moment(c.get('date')).isSame(newDate);
         });
         this.setState({ selected: newSelected })
-    },
-    saveNewEvent: function() {
-        mockData.push({
-            id: '3',
-            date: new Date(),
-            activities: []
-        });
-        //TOOD: Figure out how to fore render the right way
-        this.setState(this.getInitialState());
     },
     saveNewActivityType: function(name) {
         selectData.name.push(name);
