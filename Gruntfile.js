@@ -13,7 +13,7 @@ module.exports = function(grunt) {
         browserify: {
             dist:{
                 files: {
-                    'public/js/app.js': ['src/js/main.js']
+                    'public/js/app.js': ['client/src/js/main.js']
                 }
             }
         },
@@ -21,7 +21,7 @@ module.exports = function(grunt) {
         copy: {
             main: {
                 files: [{
-                    cwd: 'src/',
+                    cwd: 'client/src/',
                     expand: true,
                     src: '**',
                     dest: 'public/',
@@ -34,11 +34,11 @@ module.exports = function(grunt) {
 
         watch: {
             scripts: {
-                files: ['src/**/*.js'],
+                files: ['client/src/**/*.js'],
                 tasks: ['browserify']
             },
             resources: {
-                files: ['src/**/*.html', 'src/**/*.css'],
+                files: ['client/src/**/*.html', 'client/src/**/*.css'],
                 tasks: ['copy']
             },
             express: {
