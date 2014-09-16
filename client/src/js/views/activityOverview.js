@@ -5,6 +5,7 @@ var DateSelector = require('./dateSelector');
 var ActivitySummary = require('./activitySummary');
 var CreateActivity = require('./createActivity');
 var CreateEvent = require('./createEvent');
+var DatePicker = require('./datePicker');
 
 var selectData = require('../config/selectData');
 
@@ -25,6 +26,9 @@ module.exports = React.createClass({
             return activity.get('date');
         });
         return React.DOM.div(null, [
+            DatePicker({
+                key: 'DatePicker'
+            }),
             CreateEvent({
                 key: 'CreateEvent',
                 saveNewEvent: this.saveNewEvent

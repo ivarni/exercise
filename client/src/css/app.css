@@ -7,3 +7,26 @@ label,
 th {
     text-transform: capitalize;
 }
+
+.dates:after {
+    content: '.';
+    display: block;
+    clear: both;
+    visibility: hidden;
+    line-height: 0;
+    height: 0;
+}
+
+.dates div {
+    float: left;
+    width: 25px;
+    padding: 3px;
+    border: 1px solid;
+    cursor: pointer;
+}
+.dates div.week-start {
+    clear: left;
+}
+.dates div.disabled {
+    color: grey;
+}
