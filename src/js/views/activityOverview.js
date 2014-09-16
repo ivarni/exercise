@@ -27,6 +27,9 @@ var mockData = [
 ];
 
 module.exports = React.createClass({
+    componentDidMount: function() {
+        this.props.events.fetch();
+    },
     getInitialState: function() {
         return {
             selected : mockData[0]
