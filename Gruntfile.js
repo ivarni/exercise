@@ -2,11 +2,10 @@ module.exports = function(grunt) {
 
     grunt.initConfig({
 
-        connect: {
-            server: {
+        express: {
+            dev: {
                 options: {
-                    port: 8000,
-                    base: 'public'
+                    script: 'server.js'
                 }
             }
         },
@@ -41,16 +40,23 @@ module.exports = function(grunt) {
             resources: {
                 files: ['src/**/*.html', 'src/**/*.css'],
                 tasks: ['copy']
+            },
+            express: {
+                files: ['server.js'],
+                tasks: ['express:dev'],
+                options: {
+                    spawn: false
+                }
             }
         }
 
     });
 
-    grunt.loadNpmTasks('grunt-contrib-connect');
+    grunt.loadNpmTasks('grunt-express-server');
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-browserify');
 
-    grunt.registerTask('default', ['copy', 'browserify', 'connect:server', 'watch']);
+    grunt.registerTask('default', ['copy', 'browserify', 'express:dev', 'watch']);
 
 }
