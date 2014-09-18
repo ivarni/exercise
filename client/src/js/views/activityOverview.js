@@ -5,6 +5,7 @@ var ActivityInput = require('./activityInput');
 var ActivitySummary = require('./activitySummary');
 var CreateActivity = require('./createActivity');
 var DatePicker = require('./datePicker');
+var Event = require('../models/event');
 
 var selectData = require('../config/selectData');
 
@@ -48,6 +49,7 @@ module.exports = React.createClass({
         var newSelected = this.props.events.find(function(c) {
             return moment(c.get('date')).isSame(newDate);
         });
+        console.log(newSelected)
         this.setState({ selected: newSelected })
     },
     saveNewActivityType: function(name) {
@@ -56,8 +58,25 @@ module.exports = React.createClass({
         this.setState(this.getInitialState());
     },
     saveNewActivity: function(activity) {
-        this.state.selected.get('activities').push(activity);
-        this.state.selected.get('activities')[this.state.selected.get('activities').length - 1].id = "1-" + this.state.selected.get('activities').length;
-        this.setState({ selected: this.state.selected });
+        var selected = this.state.selected;
+        if (selected) {
+            selected.get('activities').push(activity);
+        } else {
+            var newEvent = new Event({
+                date: new Date(),
+                activities: []
+            });
+            //hacky, because should go via server anyway
+            newEvent.get('date').setHours(0);
+            newEvent.get('date').setMinutes(0);
+            newEvent.get('date').setSeconds(0);
+            newEvent.get('date').setMilliseconds(0);
+
+            selected = this.state.selected = newEvent;
+            newEvent.get('activities').push(activity);
+            this.props.events.add(newEvent);
+        }
+        selected.get('activities')[this.state.selected.get('activities').length - 1].id = "1-" + this.state.selected.get('activities').length;
+        this.setState({ selected: selected });
     }
 });
