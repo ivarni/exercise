@@ -4,8 +4,11 @@ Backbone.$ = $;
 
 module.exports = Backbone.Model.extend({
 
-    initialize: function(attr) {
-        this.set('date', new Date(attr.date));
+    parse: function(response, options) {
+        return {
+            date: new Date(response.date),
+            activities: response.activities
+        };
     }
 
 })

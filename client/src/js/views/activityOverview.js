@@ -18,7 +18,8 @@ module.exports = React.createClass({
     },
     getInitialState: function() {
         return {
-            selected: null
+            selected: null,
+            selectedDate: new Date()
         };
     },
     render: function() {
@@ -29,7 +30,7 @@ module.exports = React.createClass({
             DatePicker({
                 key: 'DatePicker',
                 changeSelectedDate: this.changeSelectedDate,
-                selectedDate: this.state.selected ? this.state.selected.get('date') :null,
+                selectedDate: this.state.selectedDate
             }),
             CreateActivity({
                 key: 'CreateActivity',
@@ -49,8 +50,10 @@ module.exports = React.createClass({
         var newSelected = this.props.events.find(function(c) {
             return moment(c.get('date')).isSame(newDate);
         });
-        console.log(newSelected)
-        this.setState({ selected: newSelected })
+        this.setState({
+            selected: newSelected,
+            selectedDate: newDate.toDate()
+        });
     },
     saveNewActivityType: function(name) {
         selectData.name.push(name);
@@ -63,18 +66,14 @@ module.exports = React.createClass({
             selected.get('activities').push(activity);
         } else {
             var newEvent = new Event({
-                date: new Date(),
+                date: this.state.selectedDate,
                 activities: []
             });
-            //hacky, because should go via server anyway
-            newEvent.get('date').setHours(0);
-            newEvent.get('date').setMinutes(0);
-            newEvent.get('date').setSeconds(0);
-            newEvent.get('date').setMilliseconds(0);
 
             selected = this.state.selected = newEvent;
             newEvent.get('activities').push(activity);
             this.props.events.add(newEvent);
+            newEvent.save();
         }
         selected.get('activities')[this.state.selected.get('activities').length - 1].id = "1-" + this.state.selected.get('activities').length;
         this.setState({ selected: selected });

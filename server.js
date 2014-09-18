@@ -17,9 +17,19 @@ function getEvents(req, res, next) {
     });
 }
 
+function addEvent(req, res, next) {
+    events.add(req.params).then(function(data) {
+        res.send(data);
+        next();
+    })
+}
+
 var server = restify.createServer();
+server.use(restify.bodyParser());
 
 server.get('events', log, getEvents);
+server.post('events', log, addEvent);
+
 server.get(/.*/, restify.serveStatic({
   directory: './public'
 }));

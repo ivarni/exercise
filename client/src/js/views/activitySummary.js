@@ -4,7 +4,7 @@ var fields = require('../config/fields');
 
 module.exports = React.createClass({
     render: function() {
-        if (!this.props.selected) {
+        if (!this.props.selected || !this.props.selected.get('date')) {
             return null;
         }
         var elements = this.props.selected.get('activities').map(function(activity) {
