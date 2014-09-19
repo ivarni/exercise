@@ -19,7 +19,7 @@ module.exports = React.createClass({
     getInitialState: function() {
         return {
             selected: null,
-            selectedDate: new Date()
+            selectedDate: moment().startOf('day').toDate()
         };
     },
     render: function() {

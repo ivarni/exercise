@@ -30,3 +30,6 @@ th {
 .dates div.disabled {
     color: grey;
 }
+.dates div.selected {
+    background-color: salmon;
+}
