@@ -2,8 +2,6 @@ var q = require('q');
 var moment = require('moment');
 var mongoose = require('mongoose');
 
-var mockData = [];
-
 var Event;
 var Activity;
 
@@ -12,13 +10,16 @@ db.on('error', console.log);
 db.once('open', function() {
 
     var activitySchema = new mongoose.Schema({
-
+        name: { type: 'String' },
+        kgs: { type: 'String' },
+        reps: { type: 'String' },
+        sets: { type: 'String' },
     });
     Activity = mongoose.model('Activity', activitySchema);
 
     var eventSchema = new mongoose.Schema({
         date: { type: 'Date' },
-        activities: { type: Activity, ref: activitySchema }
+        activities: [activitySchema]
     });
     Event = mongoose.model('Event', eventSchema);
 
@@ -29,11 +30,10 @@ module.exports = {
 
     get: function() {
         var deferred = q.defer();
-        deferred.resolve(mockData);
 
-        Event.find().populate('activities').run(function(err, events) { //or .exec
+        Event.find().populate('activities').exec(function(err, events) {
             if (err) return console.log(err);
-            console.dir(events);
+            deferred.resolve(events);
         });
 
         return deferred.promise;
@@ -41,18 +41,26 @@ module.exports = {
 
     add: function(data) {
         var deferred = q.defer();
-        //data = JSON.parse(data);
         data.date = moment(data.date).startOf('day');
-        mockData.push(data);
-        deferred.resolve(data);
 
         var newEvent = new Event({
-            date: data.date
+            date: data.date,
+            activities: []
         });
+        data.activities.forEach(function(activity) {
+            newEvent.activities.push(new Activity({
+                name: activity.name,
+                kgs: activity.kgs,
+                reps: activity.reps,
+                sets: activity.sets
+            }))
+        })
+
         newEvent.save(function(err, newEvent) {
             if (err) console.log(err);
             console.dir(newEvent);
         });
+        deferred.resolve(data);
 
         return deferred.promise;
     }
