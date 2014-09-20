@@ -1,6 +1,8 @@
 var React = require('react');
 var moment = require('moment');
 
+var MonthPicker = require('./monthPicker');
+
 module.exports = React.createClass({
     makeDayArray: function(start, stop, year, month) {
         var a = [];
@@ -25,7 +27,7 @@ module.exports = React.createClass({
         ].join(' ');
     },
     render: function() {
-        var now = moment();
+        var now = moment(this.props.selectedDate);
         var previous = moment().month(now.month() - 1);
         var next = moment().month(now.month() + 1);
 
@@ -53,10 +55,10 @@ module.exports = React.createClass({
                     className: self.getClassNames(day, now)
                 }, day.date());
         });
-        var header = React.DOM.h3({
-            className: 'header'
-        }, this.props.selectedDate.toLocaleDateString());
-        elements.unshift(header);
+        elements.unshift(MonthPicker({
+            changeSelectedDate: this.props.changeSelectedDate,
+            selectedDate: moment(this.props.selectedDate)
+        }));
         return React.DOM.div({
             className: 'dates'
         }, elements)

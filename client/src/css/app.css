@@ -17,7 +17,7 @@ th {
     height: 0;
 }
 
-.dates div {
+.dates div.day {
     float: left;
     width: 25px;
     padding: 3px;

@@ -22,7 +22,6 @@ module.exports = React.createClass({
             )
         );
         return React.DOM.div(null, [
-            React.DOM.h2({ key: 'headertext' }, this.props.selected.get('date').toLocaleDateString()),
             React.DOM.table({ key: 'activitytable' },
                 React.DOM.tbody(null, elements))
         ]);
