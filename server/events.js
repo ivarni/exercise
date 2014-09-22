@@ -1,14 +1,12 @@
 var q = require('q');
 var moment = require('moment');
 var mongoose = require('mongoose');
+var db = require('./db');
 
 var Event;
 var Activity;
 
-var db = mongoose.connection;
-db.on('error', console.log);
-db.once('open', function() {
-
+db.connection().then(function() {
     var activitySchema = new mongoose.Schema({
         name: { type: 'String' },
         kgs: { type: 'String' },
@@ -22,9 +20,7 @@ db.once('open', function() {
         activities: [activitySchema]
     });
     Event = mongoose.model('Event', eventSchema);
-
 });
-mongoose.connect('mongodb://localhost/exercise');
 
 module.exports = {
 

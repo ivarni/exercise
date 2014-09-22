@@ -1,6 +1,7 @@
 var restify = require('restify');
 
 var events = require('./server/events');
+var activities = require('./server/activities');
 
 function log(req, res, next) {
     console.log('%s: %s', req.method, req.path());
@@ -24,11 +25,28 @@ function addEvent(req, res, next) {
     })
 }
 
+function getActivities(req, res, next) {
+    activities.get().then(function(data) {
+        res.send(data);
+        next();
+    });
+}
+
+function addActivity(req, res, next) {
+    activities.add(req.params).then(function(data) {
+        res.send(data);
+        next();
+    })
+}
+
 var server = restify.createServer();
 server.use(restify.bodyParser());
 
 server.get('events', log, getEvents);
 server.post('events', log, addEvent);
+
+server.get('activities', log, getActivities);
+server.post('activities', log, addActivity);
 
 server.get(/.*/, restify.serveStatic({
   directory: './public'
