@@ -8,6 +8,12 @@ module.exports = Backbone.Collection.extend({
 
     url: 'activities',
 
-    model: Activity
+    model: Activity,
+
+    initialize: function(models, options) {
+        models && models.forEach(function(model) {
+            this.add(new Activity(model));
+        }, this);
+    }
 
 });

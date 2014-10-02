@@ -30,6 +30,9 @@ th {
 .dates div.disabled {
     color: grey;
 }
+.dates div.has-event {
+    background-color: antiquewhite;
+}
 .dates div.selected {
     background-color: salmon;
 }

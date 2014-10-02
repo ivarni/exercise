@@ -1,13 +1,16 @@
 (function() {
 
     var React = require('react');
-
-    var ActivityOverview = require('./views/activityOverview');
+    var MainView = require('./views/mainView');
     var Events = require('./models/events');
+    var Activities = require('./models/activities');
+
+    var events = new Events();
 
     React.renderComponent(
-        ActivityOverview({
-            events: new Events()
+        MainView({
+            events: new Events(),
+            activities: new Activities()
         }),
         document.getElementById('container')
     );

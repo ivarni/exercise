@@ -35,6 +35,30 @@ module.exports = {
         return deferred.promise;
     },
 
+    edit: function(data) {
+        var deferred = q.defer();
+
+        Event.findById(data.id, function(err, event) {
+            if (err) return console.log(err);
+            data.activities.forEach(function(activity) {
+                if (!activity._id) {
+                    event.activities.push(new Activity({
+                        name: activity.name,
+                        kgs: activity.kgs,
+                        reps: activity.reps,
+                        sets: activity.sets
+                    }));
+                }
+            });
+            event.save(function(err, event) {
+                if (err) return console.log(err);
+                deferred.resolve(event);
+            });
+        });
+
+        return deferred.promise;
+    },
+
     add: function(data) {
         var deferred = q.defer();
         data.date = moment(data.date).startOf('day');

@@ -1,5 +1,6 @@
 var React = require('react');
 var moment = require('moment');
+var _ = require('lodash');
 
 var MonthPicker = require('./monthPicker');
 
@@ -18,12 +19,18 @@ module.exports = React.createClass({
     handleClick: function(day) {
         this.props.changeSelectedDate(day)
     },
+    hasEvent: function(day) {
+        return _.find(this.props.eventDates, function(date) {
+            return date.isSame(day);
+        }) !== undefined;
+    },
     getClassNames: function(day, now) {
         return [
             'day',
             day.day() % 7 === 1 ? 'week-start': '',
             day.month() !== now.month() ? 'disabled': '',
-            day.isSame(moment(this.props.selectedDate)) ? 'selected' : ''
+            day.isSame(moment(this.props.selectedDate)) ? 'selected' : '',
+            this.hasEvent(day) ? 'has-event' : ''
         ].join(' ');
     },
     render: function() {
@@ -50,12 +57,13 @@ module.exports = React.createClass({
         var self = this;
         var elements = this.thisMonth.map(function(day, i) {
             return React.DOM.div({
-                    key: i,
+                    key: day.toString(),
                     onClick: function() { self.handleClick(day) },
                     className: self.getClassNames(day, now)
                 }, day.date());
         });
         elements.unshift(MonthPicker({
+            key: 'monthpicker',
             changeSelectedDate: this.props.changeSelectedDate,
             selectedDate: moment(this.props.selectedDate)
         }));
